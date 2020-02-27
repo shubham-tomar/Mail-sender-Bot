@@ -1,0 +1,83 @@
+import smtplib
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+
+
+CREDENTIALS_USER ="***"
+CREDENTIALS_PASS = "***"
+EMAIL_FROM_DEFAULT = "******"
+
+EMAIL_SUBJECT = "Hello There!"
+EMAIL_CC_DEFAULT = ""
+EMAIL_BCC_DEFAULT = ""
+
+# Must be a csv file containing  
+#CONTACTS_FILE = "<file directory>/<csv file>"
+
+
+# Set your Email Template here
+def getEmailContent(first_name):
+
+    email_content ="""
+Hi """+first_name+""",
+<br><br>
+Email content goes here
+<br><br>
+Regards,<br>
+your Name
+    """
+
+    return email_content
+
+# Loops your contacts list (csv file)
+def loop_contacts():
+    print('looping contacts')
+
+    # Set up the SMTP server
+    print('Sending emails')
+    s = smtplib.SMTP(host='smtp.office365.com', port=587)
+    print("11111")
+    s.starttls()
+    s.login(CREDENTIALS_USER, CREDENTIALS_PASS)
+    print("2222222")
+
+    count = 1
+
+    #with open(filename, mode='r') as contacts_file:
+        #reader = csv.reader(contacts_file)
+        #next(reader)
+        #for contact in reader:
+            #contact_full_name = contact[0]
+            #company = contact[1]
+            #title = contact[2]
+            #email = contact[3]
+            #first_name= contact[4]
+    first_name="name"
+    msg = MIMEMultipart()
+
+    print(count)
+    count = count +1
+    #print("Sending email to", contact_full_name)
+
+    msg['From']=EMAIL_FROM_DEFAULT
+    msg['To']= '*****'
+    msg['Bcc'] = EMAIL_BCC_DEFAULT
+    msg['Subject']=  EMAIL_SUBJECT
+
+    msg.attach(MIMEText(getEmailContent(first_name), 'html'))
+    filename='C:\\Users\\admin\\Desktop\\College_list\\ugc approved.pdf'
+    fo=open(filename,'rb')
+    attach = MIMEApplication(fo.read(),_subtype="pdf")
+    attach.add_header('Content-Disposition','attachment',filename=filename)    
+    fo.close()
+    msg.attach(attach)
+    print(type(msg))
+    s.send_message(msg)
+
+    del msg
+
+    s.quit()
+
+loop_contacts()
